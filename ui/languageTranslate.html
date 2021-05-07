@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Language Translator</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	form {
+		flex-direction: column;
+		margin-bottom: 20px;
+	}
+
+	label,
+	input[type="submit"] {
+		margin-top: 20px;
+	}
+
+	input[type="submit"] {
+		border-radius: 2px;
+		padding: 5px 5px 5px 5px;
+		border-width: 1px;
+		border-style: solid;
+		background-color: #00a5d2;
+		border-color: #0099c3;
+		color: white;
+	}
+	input {
+		width: 40px;
+		height: 27px;
+	}
+</style>
+
+<body>
+	<div class="container">
+		<h1>Language translator</h1>
+		</h1>
+		<form>
+			<label>Source Language:</label>
+			<input id="source" type="string" />
+			<label>Target Language:</label>
+			<input id="target" type="string" />
+			<input type="submit" value="Submit" />
+		</form>
+	</div>
+	<iframe id="test_iframe" src="about:blank" width=450 height=450></iframe>
+	<script>
+		document.addEventListener("submit", sendData);
+
+		function sendData(e) {
+			e.preventDefault();
+			const a = document.querySelector("#source").value;
+			const b = document.querySelector("#target").value;
+			const queryString = window.location.search;
+			console.log(queryString);
+			const urlParams = new URLSearchParams(queryString);
+			const activityId = urlParams.get('activityId');
+			const url = "https://6uj8oyfj0a.execute-api.us-west-2.amazonaws.com/dev/translate?activityId=" + activityId +
+				"&source=" + a + "&target=" + b;
+
+			var settings = {
+				"async": true,
+				"crossDomain": true,
+				"url": url,
+				"method": "GET"
+			}
+
+			$.ajax(settings).done(function (response) {
+				console.log(response);
+				injectHTML(response.contentHtml);
+			});
+		}
+
+		function injectHTML(html_string) {
+
+			console.log('executing injectHTML()');
+
+			//step 1: get the DOM object of the iframe.
+			var iframe = document.getElementById('test_iframe');
+
+			//var html_string = '<html><head></head><body><p>iframe content injection</p></body></html>';
+
+			/* if jQuery is available, you may use the get(0) function to obtain the DOM object like this:
+			var iframe = $('iframe#target_iframe_id').get(0);
+			*/
+
+			// step 2: obtain the document associated with the iframe tag
+			// most of the browser supports .document. 
+			// Some supports (such as the NetScape series) .contentDocumet, 
+			// while some (e.g. IE5/6) supports .contentWindow.document
+			// we try to read whatever that exists.
+			var iframedoc = iframe.document;
+			if (iframe.contentDocument)
+				iframedoc = iframe.contentDocument;
+			else if (iframe.contentWindow)
+				iframedoc = iframe.contentWindow.document;
+
+			if (iframedoc) {
+				// Put the content in the iframe
+				iframedoc.open();
+				iframedoc.writeln(html_string);
+				iframedoc.close();
+			} else {
+				//just in case of browsers that don't support the above 3 properties.
+				//fortunately we don't come across such case so far.
+				alert('Cannot inject dynamic contents into iframe.');
+			}
+		}
+	</script>
+</body>
+
+</html>

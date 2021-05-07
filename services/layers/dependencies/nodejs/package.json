@@ -1,0 +1,17 @@
+{
+    "name": "external-dependencies",
+    "version": "1.0.0",
+    "description": "Layer for external dependencies",
+    "dependencies": {
+      "axios": "^0.21.1",
+      "@google-cloud/translate": "6.2.0",
+      "aws-sdk": "2.901.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "egain",
+    "license": "UNLICENSED"
+  }
+  

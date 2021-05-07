@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Stack for Chat transcript ingestion from eGain to RSA(CallMiner)
+Parameters:
+    CodeBucketName:
+        Type: String
+        Description: The S3 Bucket Name for Code
+        Default: egain-pse-apps-oregon-dev
+    LambdaMasterRole:
+        Type: String
+        AllowedPattern: arn:(aws[a-zA-Z-]*)?:iam::\d{12}:role/?[a-zA -Z_0-9+=,.@\-_/]+
+        Description: The ARN of role for all Lambda Functions.
+        Default: 'arn:aws:iam::075827176107:role/psedevlambda'
+    eGainApiHost:
+        Type: String
+        Description: 'Host/URL of the eGain Application to access the API'
+        Default: https://rsadev.egain.cloud/system
+    eGainApiUserName:
+        Type: String
+        Description: 'User Name(Agent) to access the eGain API'
+        Default: bupacrm
+    eGainApiPassword:
+        Type: String
+        Description: 'Password for User account to access the eGain API'
+        NoEcho: true
+        Default: egain123
+    eGainApiProxyIp:
+        Type: String
+        Description: 'Name/IP address of the Proxy'
+        Default: awirproxy.egain.cloud
+    eGainApiProxyPort:
+        Type: String
+        Description: 'Port for Proxy'
+        Default: 800
+    eGainApiProxyUserName:
+        Type: String
+        Description: 'UserName for accessing eGain Proxy'
+        Default: psuser
+    eGainApiProxyPassword:
+        Type: String
+        Description: 'Password for accessing eGain Proxy'
+        NoEcho: true
+        Default: Professor1
+    LoggerLevel:
+        Type: String
+        Description: Used to set the logger level in survey module for cloudwatch logs.
+        Default: debug   
+    DisableProxy:
+        Type: String
+        Description: Boolean to indicate if proxy is required for API and SMTP.
+        Default: true
+    VpcId:
+       Type: AWS::EC2::VPC::Id
+       Default: "vpc-0987ec295e545122e"
+       Description: "Required VPC endpoint for accessing network from lambda"
+    SubnetIds:
+        Type: List<AWS::EC2::Subnet::Id>
+        Default: 'subnet-098b6496d08e8ee79,subnet-066b55720041a8ab9'
+        Description: "Subnets associated with the VPC endpoint."
+    SecurityGroupId:
+        Type: AWS::EC2::SecurityGroup::Id
+        Default: 'sg-027774a1348a6dc17'
+        Description: Security group to associated with the VPC endpoint.
+Resources:
+  EgpsLanguageTranslateLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: 'egps-sample-app-language-translation-dependencies'
+      Description: Sample App language translation dependencies layer
+      ContentUri: layers/dependencies
+      CompatibleRuntimes:
+        - nodejs12.x
+      RetentionPolicy: Retain
+  EgpsLanguageTranslateApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Variables: 
+  eGainTranslateLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/
+      Description: To read the chat transcript from eGain using Interaction API and Ingest to Call Miner using text API
+      FunctionName: !Sub 'egain-language-translator'
+      Handler: index.lambdaHandler      
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 300
+      Role: !Ref LambdaMasterRole
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          Ref: SubnetIds
+      Layers:
+        - Ref: EgpsLanguageTranslateLayer
+      Environment:
+        Variables:
+           LogLevel: !Ref LoggerLevel
+           DisableProxy: !Ref DisableProxy
+      Events:
+        NoHarm:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: '/translate'
+            Method: get
+            RestApiId:
+              Ref: EgpsLanguageTranslateApi
+  EgainTranslatorPermToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties:
+        FunctionName: !Ref eGainTranslateLambda
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: !GetAtt eGainTranslateLambda.Arn
+  EgainTranslatorSecretManager:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties: 
+        Name: 'egps/sample-apps/language-translate-app/egain'
+        Description: Secrets for storing eGain API credentials.
+        SecretString: !Sub '{ "egain-api-user-credential": "{ \t\"userName\": \"${eGainApiUserName}\", \t\"password\": \"${eGainApiPassword}\" }"' 
+  EgpsLanguageTranslateParameter1:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: '/egps/sample-apps/language-translate-app/apihost'
+      Type: String
+      Value: 3
+      Description: eGain host for which this app is integrated.
+      AllowedPattern: "^[0-9]+$"
