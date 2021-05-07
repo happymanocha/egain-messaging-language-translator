@@ -57,6 +57,7 @@ Advisor will have option to refresh app to get latest transcript content updated
 | VPC_ID  | AWS VPC ID - used for Lambda configuration. Keep it empty if not applicable |
 | SECURITY_GROUP_ID  | Security group related to VPC - used for Lambda configuration. Keep it empty if not applicable |
 | SUBNET_IDS  | Subnets related to VPC - used for Lambda configuration. Keep it empty if not applicable|
+3. On windows command prompt , execute egain-language-translator-deploy.sh file to start the deployment.
 
 
 # Post Installation
