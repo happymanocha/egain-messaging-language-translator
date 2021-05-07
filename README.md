@@ -41,7 +41,7 @@ Advisor will have option to refresh app to get latest transcript content updated
 **Notes**: Steps mentioned below are for windows environment but can be followed in similar fashion for other OS too. 
 
 1. Clone this repository
-2. Navigate to deployment folder and edit the egain-language-translator-config.properties file with appropriate parameters. Proxy details will be required if access to internet is via proxy, if not then keep the fields empty.
+2. Edit the egain-language-translator-config.properties file with appropriate parameters. Proxy details will be required if access to internet is via proxy, if not then keep the fields empty.
 
 | Property  | Description |
 | ------------- | ------------- |
@@ -57,7 +57,7 @@ Advisor will have option to refresh app to get latest transcript content updated
 | VPC_ID  | AWS VPC ID - used for Lambda configuration. Keep it empty if not applicable |
 | SECURITY_GROUP_ID  | Security group related to VPC - used for Lambda configuration. Keep it empty if not applicable |
 | SUBNET_IDS  | Subnets related to VPC - used for Lambda configuration. Keep it empty if not applicable|
-3. On windows command prompt , execute egain-language-translator-deploy.sh file to start the deployment.
+3. Open windows command prompt , execute egain-language-translator-deploy.sh file to start the deployment.
 
 
 # Post Installation
