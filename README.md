@@ -4,6 +4,7 @@ Integrate eGain Advisor Desktop with Language Translation
 Offering multilingual support is no more a choice but a need for geographically dispersed business teams.  Multilingual customer support leads to a better experience for the customer. Firstly, they don't feel shut out from your service, or put off by communication barriers. But beyond the obvious, they also get a quicker and more convenient support journey.  At the same time, business operations want to create cost efficient structure to maximize the agent's time rather than creating separate contact centers for different skills, product and languages. eGain platform provides innovative ways to empower your agents to add external application to help translating the content so that any agent can respond to customer in a language of their choice. This example uses Google translate APIs and provides a simple user interface for agents to translate the content with in eGain Advisor desktop. 
 
 # Architecture 
+![LanguageTranslation](https://user-images.githubusercontent.com/83808136/117493376-810a0100-af90-11eb-88e2-90b6d324197f.jpg)
 
 
 # High level overview of this app architecture
@@ -62,6 +63,7 @@ Advisor will have option to refresh app to get latest transcript content updated
 1. Expose your s3 bucket hosted UI via cloudfront else directly s3 bucket can be used. But for using https protocol we need to use cloudfront or API gateway to access UI. 
 2. Use the url fetched in step above and then login to eGain admin console with your admin credentials. 
 3. Configure the new button for advisor desktop using the URL, refer below screenshot. 
+![image](https://user-images.githubusercontent.com/83808136/117493581-cc241400-af90-11eb-8f17-db0cc118895b.png)
 
 
 4. Login into eGain advisor desktop and initiate a eGain chat. Refer eGain admin guide for detailed process. 
