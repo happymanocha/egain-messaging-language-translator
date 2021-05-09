@@ -81,18 +81,9 @@ As a part of post deployment verification we can ensure working end to end funct
 4. This button will launch language translator for live chat or email in eGain. Refer docs section for screenshot of this integration. 
 
 This package will deploy following components 
-1. 2 Lambdas 
-        1. egain-language-translator
-        2. egain-supported-languages
-
-2. 2 Layers
-        1. egps-sample-app-language-translation-common
-        2. egps-sample-app-language-translation-dependencies
-
-3. 1 API with 2 paths
-        1. Get : /translate
-        2. Get : /languages
-
+1. 2 Lambdas - egain-language-translator and egain-supported-languages.
+2. 2 Layers - egps-sample-app-language-translation-common and egps-sample-app-language-translation-dependencies.
+3. 1 API with 2 paths- Get : /translate and Get : /languages
 4. UI hosted in s3 bucket
 5. Secret manager for google and egain credentials
 6. Parameter store for other configurations. 
