@@ -28,12 +28,12 @@ Advisor will have option to refresh app to get latest transcript content updated
 2. eGain Cloud agent credentials
 3. AWS cloud credentials with permission to access AWS API Gateway, Lambda and all mentioned services from "Additional Information".
 4. If VPC is enabled then ensure eGain URL is accessible from Lambda.
-5. Required s3 bucket folder and IAM roles are created referring json provided with the sample app in "" directory
-6. IAM Role with name with all required permissions defined is "sentimentAnalyserrole.json" created before the deployment and used while deploying the application
-7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI
-
-8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
-
+5. Required s3 bucket folders 
+        1. One bucket for deploying backend code required by SAM template. 
+        2. One bucket for deploying UI code. Both buckets can be same, we can provide different folder path to avoid confusion.
+6. IAM role with permissions on all required AWS service. Sample IAM role json file is attached in docs section. 
+7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI. This will be used to upload UI code in S3      bucket. 
+8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM      CLI
 9. You need to run the 'aws configure' to configure the aws profile for deployment
 
 
@@ -61,16 +61,32 @@ Advisor will have option to refresh app to get latest transcript content updated
 
 
 # Post Installation
-1. Expose your s3 bucket hosted UI via cloudfront else directly s3 bucket can be used. But for using https protocol we need to use cloudfront or API gateway to access UI. 
-2. Use the url fetched in step above and then login to eGain admin console with your admin credentials. 
-3. Configure the new button for advisor desktop using the URL, refer below screenshot. 
+1. Installation will upload UI code in dedicated S3 bucket but access to this S3 bucket needs to be configured manually depending on user preferences. 
+    1. Expose your hosted UI in s3 bucket via cloudfront.
+    2. Use API gateway S3 integration to access S3 bucket. Refer docs section for more info on how to do this. 
+    3. Else use s3 bucket directly to access but it will be without https protocol. 
+2. Copy the url of our hosted html from step above and then login to eGain Management console with your partition credentials. 
+3. Go to tools console then Tools-> Partition:default -> Business Objects -> Attribute Settings -> Screen -> Toolbar
+4. Configure the new button for advisor desktop using the URL, refer below screenshot. 
 ![image](https://user-images.githubusercontent.com/83808136/117493581-cc241400-af90-11eb-8f17-db0cc118895b.png)
 
+ 
 
-4. Login into eGain advisor desktop and initiate a eGain chat. Refer eGain admin guide for detailed process. 
-5. Once activity is assigned to your agent then select it, after that button configured in step 3 will be visible on your info pane. 
-6. This button will launch language translator for live chat or email in eGain. 
+# Verification
+As a part of post deployment verification we can ensure working end to end functionality and check if all resources are deployed properly. For functionality testing refer below steps: 
 
+1. Login into eGain advisor desktop with your agent credentials and mark yourself available for chat. 
+2. Launch a eGain chat as customer. Refer eGain admin guide for detailed process. 
+3. Once activity is assigned to your agent then select it, after that button configured in step 4 of post installation step will be visible on your info pane. 
+4. This button will launch language translator for live chat or email in eGain. Refer docs section for screenshot of this integration. 
+
+This package will deploy following components 
+1. 2 Lambdas - egain-language-translator and egain-supported-languages.
+2. 2 Layers - egps-sample-app-language-translation-common and egps-sample-app-language-translation-dependencies.
+3. 1 API with 2 paths- Get : /translate and Get : /languages
+4. UI hosted in s3 bucket
+5. Secret manager for google and egain credentials
+6. Parameter store for other configurations. 
 
 # Maintenance
 1. All secret information like google translate API credentials, eGain agent credentials are stored in AWS secret manager. So if rotations of keys are required then it can be directly done via this. 
