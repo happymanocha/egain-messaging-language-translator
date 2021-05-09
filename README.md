@@ -82,8 +82,8 @@ As a part of post deployment verification we can ensure working end to end funct
 
 This package will deploy following components 
 1. 2 Lambdas 
-        1. egain-language-translator
-        2. egain-supported-languages
+                1. egain-language-translator
+                2. egain-supported-languages
 
 2. 2 Layers
         1. egps-sample-app-language-translation-common
