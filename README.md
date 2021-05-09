@@ -62,9 +62,9 @@ Advisor will have option to refresh app to get latest transcript content updated
 
 # Post Installation
 1. Installation will upload UI code in dedicated S3 bucket but access to this S3 bucket needs to be configured manually depending on user preferences. 
-  1. Expose your hosted UI in s3 bucket via cloudfront.
-  2. Use API gateway S3 integration to access S3 bucket.
-  3. Else use s3 bucket directly to access but it will be without https protocol. 
+  a. Expose your hosted UI in s3 bucket via cloudfront.
+  b. Use API gateway S3 integration to access S3 bucket.
+  c. Else use s3 bucket directly to access but it will be without https protocol. 
 2. Copy the url of our hosted html from step above and then login to eGain Management console with your partition credentials. 
 3. Go to tools console then Tools-> Partition:default -> Business Objects -> Attribute Settings -> Screen -> Toolbar
 4. Configure the new button for advisor desktop using the URL, refer below screenshot. 
