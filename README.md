@@ -61,13 +61,17 @@ Advisor will have option to refresh app to get latest transcript content updated
 
 
 # Post Installation
-1. Expose your s3 bucket hosted UI via cloudfront else directly s3 bucket can be used. But for using https protocol we need to use cloudfront or API gateway to access UI. 
-2. Use the url fetched in step above and then login to eGain admin console with your admin credentials. 
-3. Configure the new button for advisor desktop using the URL, refer below screenshot. 
+1. Installation will upload UI code in dedicated S3 bucket but access to this S3 bucket needs to be configured manually depending on user preferences. 
+  1. Expose your hosted UI in s3 bucket via cloudfront.
+  2. Use API gateway S3 integration to access S3 bucket.
+  3. Else use s3 bucket directly to access but it will be without https protocol. 
+2. Copy the url of our hosted html from step above and then login to eGain Management console with your partition credentials. 
+3. Go to tools console then Tools-> Partition:default -> Business Objects -> Attribute Settings -> Screen -> Toolbar
+4. Configure the new button for advisor desktop using the URL, refer below screenshot. 
 ![image](https://user-images.githubusercontent.com/83808136/117493581-cc241400-af90-11eb-8f17-db0cc118895b.png)
 
 
-4. Login into eGain advisor desktop and initiate a eGain chat. Refer eGain admin guide for detailed process. 
+4. Login into eGain advisor desktop with your agent credentials and initiate a eGain chat. Refer eGain admin guide for detailed process. 
 5. Once activity is assigned to your agent then select it, after that button configured in step 3 will be visible on your info pane. 
 6. This button will launch language translator for live chat or email in eGain. 
 
