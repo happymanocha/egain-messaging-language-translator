@@ -28,12 +28,12 @@ Advisor will have option to refresh app to get latest transcript content updated
 2. eGain Cloud agent credentials
 3. AWS cloud credentials with permission to access AWS API Gateway, Lambda and all mentioned services from "Additional Information".
 4. If VPC is enabled then ensure eGain URL is accessible from Lambda.
-5. Required s3 bucket folder and IAM roles are created referring json provided with the sample app in "" directory
-6. IAM Role with name with all required permissions defined is "sentimentAnalyserrole.json" created before the deployment and used while deploying the application
-7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI
-
-8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
-
+5. Required s3 bucket folders 
+        1. One bucket for deploying backend code required by SAM template. 
+        2. One bucket for deploying UI code. Both buckets can be same, we can provide different folder path to avoid confusion.
+6. IAM role with permissions on all required AWS service. Sample IAM role json file is attached in docs section. 
+7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI. This will be used to upload UI code in S3      bucket. 
+8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM      CLI
 9. You need to run the 'aws configure' to configure the aws profile for deployment
 
 
@@ -63,7 +63,7 @@ Advisor will have option to refresh app to get latest transcript content updated
 # Post Installation
 1. Installation will upload UI code in dedicated S3 bucket but access to this S3 bucket needs to be configured manually depending on user preferences. 
     1. Expose your hosted UI in s3 bucket via cloudfront.
-    2. Use API gateway S3 integration to access S3 bucket.
+    2. Use API gateway S3 integration to access S3 bucket. Refer docs section for more info on how to do this. 
     3. Else use s3 bucket directly to access but it will be without https protocol. 
 2. Copy the url of our hosted html from step above and then login to eGain Management console with your partition credentials. 
 3. Go to tools console then Tools-> Partition:default -> Business Objects -> Attribute Settings -> Screen -> Toolbar
