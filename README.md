@@ -70,11 +70,32 @@ Advisor will have option to refresh app to get latest transcript content updated
 4. Configure the new button for advisor desktop using the URL, refer below screenshot. 
 ![image](https://user-images.githubusercontent.com/83808136/117493581-cc241400-af90-11eb-8f17-db0cc118895b.png)
 
+ 
 
-4. Login into eGain advisor desktop with your agent credentials and initiate a eGain chat. Refer eGain admin guide for detailed process. 
-5. Once activity is assigned to your agent then select it, after that button configured in step 3 will be visible on your info pane. 
-6. This button will launch language translator for live chat or email in eGain. 
+# Verification
+As a part of post deployment verification we can ensure working end to end functionality and check if all resources are deployed properly. For functionality testing refer below steps: 
 
+1. Login into eGain advisor desktop with your agent credentials and mark yourself available for chat. 
+2. Launch a eGain chat as customer. Refer eGain admin guide for detailed process. 
+3. Once activity is assigned to your agent then select it, after that button configured in step 4 of post installation step will be visible on your info pane. 
+4. This button will launch language translator for live chat or email in eGain. Refer docs section for screenshot of this integration. 
+
+This package will deploy following components 
+1. 2 Lambdas 
+        1. egain-language-translator
+        2. egain-supported-languages
+
+2. 2 Layers
+        1. egps-sample-app-language-translation-common
+        2. egps-sample-app-language-translation-dependencies
+
+3. 1 API with 2 paths
+        1. Get : /translate
+        2. Get : /languages
+
+4. UI hosted in s3 bucket
+5. Secret manager for google and egain credentials
+6. Parameter store for other configurations. 
 
 # Maintenance
 1. All secret information like google translate API credentials, eGain agent credentials are stored in AWS secret manager. So if rotations of keys are required then it can be directly done via this. 
