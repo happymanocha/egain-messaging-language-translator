@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: Stack for Chat transcript ingestion from eGain to RSA(CallMiner)
+Description: Stack for language translation integration in eGain advisor desktop
 Parameters:
     CodeBucketName:
         Type: String
@@ -41,10 +41,6 @@ Parameters:
         Description: 'Password for accessing eGain Proxy'
         NoEcho: true
         Default: Professor1
-    LoggerLevel:
-        Type: String
-        Description: Used to set the logger level in survey module for cloudwatch logs.
-        Default: debug   
     DisableProxy:
         Type: String
         Description: Boolean to indicate if proxy is required for API and SMTP.
@@ -62,12 +58,21 @@ Parameters:
         Default: 'sg-027774a1348a6dc17'
         Description: Security group to associated with the VPC endpoint.
 Resources:
-  EgpsLanguageTranslateLayer:
+  EgpsLanguageTranslateDependenciesLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: 'egps-sample-app-language-translation-dependencies'
       Description: Sample App language translation dependencies layer
       ContentUri: layers/dependencies
+      CompatibleRuntimes:
+        - nodejs12.x
+      RetentionPolicy: Retain
+  EgpsLanguageTranslateCommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: 'egps-sample-app-language-translation-common'
+      Description: Sample App language translation common layer
+      ContentUri: layers/common
       CompatibleRuntimes:
         - nodejs12.x
       RetentionPolicy: Retain
@@ -79,9 +84,9 @@ Resources:
   eGainTranslateLambda:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: src/
+      CodeUri: src/translator
       Description: To read the chat transcript from eGain using Interaction API and Ingest to Call Miner using text API
-      FunctionName: !Sub 'egain-language-translator'
+      FunctionName: 'egain-language-translator'
       Handler: index.lambdaHandler      
       Runtime: nodejs12.x
       MemorySize: 128
@@ -93,16 +98,46 @@ Resources:
         SubnetIds:
           Ref: SubnetIds
       Layers:
-        - Ref: EgpsLanguageTranslateLayer
+        - Ref: EgpsLanguageTranslateDependenciesLayer
+        - Ref: EgpsLanguageTranslateCommonLayer
       Environment:
         Variables:
-           LogLevel: !Ref LoggerLevel
            DisableProxy: !Ref DisableProxy
       Events:
         NoHarm:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: '/translate'
+            Method: get
+            RestApiId:
+              Ref: EgpsLanguageTranslateApi
+  eGainSupportedLanguagesLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/supportedLanguages
+      Description: To read the chat transcript from eGain using Interaction API and Ingest to Call Miner using text API
+      FunctionName: 'egain-supported-languages'
+      Handler: index.lambdaHandler      
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 300
+      Role: !Ref LambdaMasterRole
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          Ref: SubnetIds
+      Layers:
+        - Ref: EgpsLanguageTranslateDependenciesLayer
+        - Ref: EgpsLanguageTranslateCommonLayer
+      Environment:
+        Variables:
+           DisableProxy: !Ref DisableProxy
+      Events:
+        NoHarm:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: '/languages'
             Method: get
             RestApiId:
               Ref: EgpsLanguageTranslateApi

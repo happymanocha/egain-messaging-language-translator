@@ -1,0 +1,11 @@
+{
+  "name": "egain-language-translation-integration",
+  "version": "1.0.0",
+  "description": "Language translation lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "egain\\Nishant Sanodia",
+  "license": "UNLICENSED"
+}
