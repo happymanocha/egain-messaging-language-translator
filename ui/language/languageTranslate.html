@@ -20,16 +20,15 @@
 				$.ajax(settings).done(function (response) {
 					console.log(response);
 					localStorage.setItem('languages',JSON.stringify(response));
-					var languages = localStorage.getItem('languages');
-					for(var i=0;i<languages.length;i++)
+					for(var i=0;i<response.length;i++)
 					{
-						if(languages[i].supportSource){
+						if(response[i].supportSource){
 							$("#source-languages").append("<option value='" + 
-							languages[i].languageCode + "' label='"+ languages[i].displayName + "'></option>");
+							response[i].languageCode + "' label='"+ response[i].displayName + "'></option>");
 						}
-						if(languages[i].supportTarget){
+						if(response[i].supportTarget){
 							$("#target-languages").append("<option value='" + 
-							languages[i].languageCode + "' label='"+ languages[i].displayName + "'></option>");
+							response[i].languageCode + "' label='"+ response[i].displayName + "'></option>");
 						}
 					}
 				});
@@ -136,7 +135,7 @@
 		  </div>
 		</div>
 		<p>
-			<button type="button" class="btn btn-primary" name="options" data-toggle="collapse" data-target="#collapseOptions">Show Options</button>	
+			<input type="button" class="btn btn-primary" id="options" data-toggle="collapse" data-target="#collapseOptions" value="Show Options" />
 			<button type="button" class="btn btn-primary" onClick="sendData()">Refresh</button>
 		</p>
 		<p>
@@ -202,9 +201,12 @@
 			alert('Cannot inject dynamic contents into iframe.');
 		  }*/
 	}
-	$('#collapseOptions').on('hidden.bs.collapse', function () {
-	  // do something…
-	})
+	$('#collapseOptions').on('show.bs.collapse', function () {
+		document.getElementById('options').value = 'Hide Options';
+	});
+	$('#collapseOptions').on('hide.bs.collapse', function () {
+		document.getElementById('options').value = 'Show Options';
+	});
     </script>
   </body>
 </html>
